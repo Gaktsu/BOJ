@@ -1,20 +1,20 @@
 #include <iostream>
-#include <vector>
-#include <cmath>
+#include <vector> //vector
+#include <cmath> //round
 
 using namespace std;
 
-void Arithmetic_Mean(int n, vector<int>& vec) {
+void Arithmetic_Mean(int n, vector<int>& vec) {//산술
 	int sum = 0;
-	float res;
+	float res;//소수 첫째자리까지 반올림하기위해(정수 아닌 실수 필요), 메모리 작은걸로 하기 위해 --> float
 
 	for (int i = 0; i < n; i++) {
 		sum += vec[i];
 	}
 
-	res = round(float(sum) / n);
+	res = round(float(sum) / n);// 반올림
 
-	if (res == -0)
+	if (res == -0)// -0.3333 일때 -0이 됨
 		res = 0;
 
 	cout << res << '\n';
@@ -25,22 +25,22 @@ void Middle_Value(int n, vector<int>& vec) {
 	cout << vec[mid] << endl;
 }
 
-void Mode_Value(int n, vector<int>& vec) {
+void Mode_Value(int n, vector<int>& vec) {//최빈값 여기서 젤 복잡
 	int max = -1;//최대로 나온 횟수(최빈값)
 	int cnt;//해당 값이 몇번나왔는지 체크용
 	int ix;//최빈값을 가진 수의 인덱스
-	bool is_overlap = false;//중복인가 (최빈값이)
+	bool is_overlap = false;//최빈값이 중복되는가(같은값이 있는가)
 	int j;
 	int pre_val = 10000;
 
 	for (int i = 0; i < n; i++) {
-		if (vec[i] == pre_val)//이전의 값은 이미 확인했으니 할 필요 없음
+		if (vec[i] == pre_val)//이전의 값은 이미 확인했으니 할 필요 없음, 그리고 해봤자 시간낭비임
 			continue;
 		cnt = 0;
 		j = i + 1;//이전의 값은 필요없음 (자신과는 다른 수이므로)
 		while (j < n && vec[i] == vec[j]) {//자신과 다른 값이 나올때까지
 			cnt++;
-			j++;//j증가
+			j++;
 		}
 
 		if (max < cnt) {//최대 빈도수를 넘기면
@@ -50,17 +50,17 @@ void Mode_Value(int n, vector<int>& vec) {
 			is_overlap = false;
 		}
 
-		else if (max == cnt && is_overlap == false) {
-			ix = i;
-			is_overlap = true;
+		else if (max == cnt && is_overlap == false) {//최빈값과 같은 결과가 나왔으며 한번도 중복되지 않았을때(문제에서 중복되면 (최빈값들 중에서)2번째로 작은수를 출력하라 함)
+			ix = i;//(최빈값들 중에서) 2번째로 작은수의 인덱스 대입
+			is_overlap = true;//이제 기존의 최빈값보다 더 큰 수가 나오지 않으면 다시 출입 못함
 		}
 
-		pre_val = vec[i];
+		pre_val = vec[i];//이전값 대입
 	}
-	cout << vec[ix] << '\n';
+	cout << vec[ix] << '\n';//최빈값을 가진 값 출력
 }	
 
-void Sub_Max_Min(int n, vector<int>& vec) {
+void Sub_Max_Min(int n, vector<int>& vec) {//최대 - 최소
 	int min = vec[0];
 	int max = vec[n-1];
 
@@ -73,19 +73,19 @@ int main() {
 	cin.tie(NULL);
 
 	int n;
-	cin >> n;
+	cin >> n;//횟수
 
 	vector<int> vec;
-	vec.resize(8001);
+	vec.resize(8001);//-4000 ~ 4000
 
 	int num;
 
 	for (int i = 0; i < n; i++) {
 		cin >> num;
-		vec[4000 + num]++;
+		vec[4000 + num]++;// 0 == [4000], -4000 == [0]
 	}
 
-	vector<int> arr;
+	vector<int> arr;//vec배열이 0값이 아닌 값을 넣기 위해 선언
 	arr.resize(n);
 
 	int t = 0;
@@ -96,10 +96,12 @@ int main() {
 		}		
 	}
 
-	Arithmetic_Mean(n,arr);
-	Middle_Value(n, arr);//마지막에 배열위치를 바꿔야해서 마지막으로 보냄
-	Mode_Value(n, arr);
-	Sub_Max_Min(n, arr);
+//여기 인자값은 arr이지만 함수안에서는 모두 vec으로 통일시킴
+
+	Arithmetic_Mean(n,arr);//산술 평균
+	Middle_Value(n, arr);//중간값
+	Mode_Value(n, arr);//최빈값
+	Sub_Max_Min(n, arr);//최대 - 최소
 
 	return 0;
 }
