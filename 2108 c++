@@ -1,0 +1,105 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+void Arithmetic_Mean(int n, vector<int>& vec) {
+	int sum = 0;
+	float res;
+
+	for (int i = 0; i < n; i++) {
+		sum += vec[i];
+	}
+
+	res = round(float(sum) / n);
+
+	if (res == -0)
+		res = 0;
+
+	cout << res << '\n';
+}
+
+void Middle_Value(int n, vector<int>& vec) {
+	int mid = (n / 2);
+	cout << vec[mid] << endl;
+}
+
+void Mode_Value(int n, vector<int>& vec) {
+	int max = -1;//최대로 나온 횟수(최빈값)
+	int cnt;//해당 값이 몇번나왔는지 체크용
+	int ix;//최빈값을 가진 수의 인덱스
+	bool is_overlap = false;//중복인가 (최빈값이)
+	int j;
+	int pre_val = 10000;
+
+	for (int i = 0; i < n; i++) {
+		if (vec[i] == pre_val)//이전의 값은 이미 확인했으니 할 필요 없음
+			continue;
+		cnt = 0;
+		j = i + 1;//이전의 값은 필요없음 (자신과는 다른 수이므로)
+		while (j < n && vec[i] == vec[j]) {//자신과 다른 값이 나올때까지
+			cnt++;
+			j++;//j증가
+		}
+
+		if (max < cnt) {//최대 빈도수를 넘기면
+			ix = i;//그 값을 ix로
+			max = cnt;
+			if(is_overlap == true)
+			is_overlap = false;
+		}
+
+		else if (max == cnt && is_overlap == false) {
+			ix = i;
+			is_overlap = true;
+		}
+
+		pre_val = vec[i];
+	}
+	cout << vec[ix] << '\n';
+}	
+
+void Sub_Max_Min(int n, vector<int>& vec) {
+	int min = vec[0];
+	int max = vec[n-1];
+
+	cout << max - min << '\n';
+}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cout.tie(NULL);
+	cin.tie(NULL);
+
+	int n;
+	cin >> n;
+
+	vector<int> vec;
+	vec.resize(8001);
+
+	int num;
+
+	for (int i = 0; i < n; i++) {
+		cin >> num;
+		vec[4000 + num]++;
+	}
+
+	vector<int> arr;
+	arr.resize(n);
+
+	int t = 0;
+	for (int i = 0; i < 8001; i++) {
+		while (vec[i] != 0) {
+			arr[t++] = i - 4000;
+			vec[i]--;
+		}		
+	}
+
+	Arithmetic_Mean(n,arr);
+	Middle_Value(n, arr);//마지막에 배열위치를 바꿔야해서 마지막으로 보냄
+	Mode_Value(n, arr);
+	Sub_Max_Min(n, arr);
+
+	return 0;
+}
