@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <utility>
+using namespace std;
+
+int n;//숫자 개수
+int max_ = -1000000000, min_ = 1000000000, sum = 0;//최대, 최솟값, 더한 값
+vector<int> arr;//연산에 사용될 숫자들
+vector<pair<int, int>> oper;//first : 연산자 번호, second : 연산자 사용 가능 횟수
+
+void Calculate(int ix) {
+	if (ix > (n - 1)) {
+		if (max_ < sum)
+			max_ = sum;
+		if (min_ > sum)
+			min_ = sum;
+
+		return;
+	}
+			
+	int cal = 0;//연산자 번호 확인용
+	int tmp = sum;//연산하기 전에 담아둠 (연산 전 sum = 100, 연산후 sum = 1024가 되었다 가정할때 , sum을 원래대로 안되돌리면 다른 연산자랑 할때도 100으로 굴려야 하는데, 1024가 되면 값이 이상해진다)
+	bool chosen = false;//true면 cal에 해당되는 연산자를 사용할거다 라는 의미
+
+	for (int i = 0; i < 4; i++) {//연산자 사용횟수가 남은걸로 선택(왼쪽에서부터 확인함) (순서대로  +, - ,* , / )
+		if (oper[i].second != 0) {//연산자 사용횟수가 남아있다면
+			cal = i;
+			oper[i].second--;
+			chosen = true;
+		}
+
+		if (chosen)
+		{
+			switch (cal) {
+			case 0://+연산자이면
+				sum += arr[ix];
+				break;
+			case 1://-연산자이면
+				sum -= arr[ix];
+				break;
+			case 2://*연산자이면
+				sum *= arr[ix];
+				break;
+			case 3:// / 연산자이면
+				sum /= arr[ix];
+				break;
+			}
+			Calculate(ix + 1);
+			sum = tmp;
+			oper[cal].second++;//나중에 또 사용가능하도록
+			chosen = false;//false로 안하면 연산하면 안되는데 연산한다
+		}	
+	}
+}
+
+int main() {
+	cin >> n;
+
+	int num, op;
+	for (int i = 0; i < n; i++) {
+		cin >> num;
+
+		arr.push_back(num);	
+	}
+
+	for (int i = 0; i < 4; i++) {
+		cin >> op;
+
+		oper.push_back(make_pair(i, op));
+	}
+
+	sum = arr[0];
+
+	Calculate(1);
+
+	cout << max_ << '\n';
+	cout << min_ << '\n';
+	return 0;
+}
